@@ -37,6 +37,17 @@ class ModeleNBA:
          
         return X, Y
     
+    def evaluer(self):
+        
+        predictions = self.modele.predict(self.X_test)    
+        mae = mean_absolute_error(self.Y_test, predictions)
+        moy= self.Y_train.mean()
+        predictions_baseline=[moy for joueur in self.Y_test]
+        mae_baseline = mean_absolute_error(self.Y_test, predictions_baseline )
+        mae_verif=np.abs(self.Y_test - predictions).mean()
+        verification= np.isclose(mae,mae_verif)
+        
+        return mae,mae_baseline, verification
     def entrainer(self):
             X,Y= self.preparer_donnees()
             X_train, X_test, Y_train, Y_test = train_test_split(

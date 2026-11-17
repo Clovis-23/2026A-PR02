@@ -36,3 +36,18 @@ class ModeleNBA:
         X=pd.concat([X,pos_int], axis=1)
          
         return X, Y
+    
+    def entrainer(self):
+            X,Y= self.preparer_donnees()
+            X_train, X_test, Y_train, Y_test = train_test_split(
+            X, Y,
+            test_size=0.2,
+            random_state=42
+            )
+            self.modele.fit(X_train, Y_train)
+            self.X_train=X_train
+            self.X_test=X_test
+            self.Y_train=Y_train
+            self.Y_test=Y_test
+            return X_train, X_test
+        

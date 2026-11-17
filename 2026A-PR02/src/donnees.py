@@ -140,6 +140,3 @@ if __name__ == "__main__":
     plt.title('histogramme de la colonne pts')
     plt.savefig('histogramme_pts.png')
     plt.show()
-    
-
-

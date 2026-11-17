@@ -36,3 +36,4 @@ class ModeleNBA:
         X=pd.concat([X,pos_int], axis=1)
          
         return X, Y
+

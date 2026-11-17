@@ -51,3 +51,31 @@ class ModeleNBA:
             self.Y_test=Y_test
             return X_train, X_test
         
+    def sauvegarder(self):
+            chemin= os.path.join(self.racine_projet,"modeles" )
+            os.makedirs(chemin, exist_ok=True)
+
+            chemin_sauvegarde = os.path.join(chemin, "modele_nba.joblib")
+
+            joblib.dump(self.modele, chemin_sauvegarde)
+
+    def sauvegarder_metadata(self):
+
+        mae,mae_baseline, verification=self.evaluer()
+        X,Y= self.preparer_donnees()
+        colonnes = X.columns.tolist()
+        intervalles={}
+        for colonne in X:
+            intervalles[colonne]={
+            'min':float(X[colonne].min()),
+            'max':float(X[colonne].max())
+            }
+        positions = self.donnes['pos'].unique().tolist()
+        metadata={"colonnes": colonnes, "mae": float(mae) ,   "intervalles": intervalles
+        , "categories":positions
+            }
+        chemin_racine= os.path.join(self.racine_projet, 'donnees')
+        os.makedirs(chemin_racine, exist_ok=True)
+        chemin= os.path.join(chemin_racine, 'metadata.json')
+        with open(chemin, "w") as f:
+            json.dump(metadata, f, indent=4)        

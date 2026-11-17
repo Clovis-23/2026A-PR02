@@ -19,4 +19,20 @@ class ModeleNBA:
         self.colonne_int= pd.get_dummies(data[colonne],dtype=int)
         
         return self.colonne_int
-        
+    
+
+    def preparer_donnees(self):
+
+        chemin=os.path.join(self.racine_projet,"donnees","nba_nettoye.csv")
+
+        if not os.path.exists(chemin):
+            raise FileNotFoundError("Le fichier NBA est introuvable")
+        with open(chemin, "r", encoding="utf-8") as f:
+            self.donnes = pd.read_csv(f)
+        X=self.donnes[['season_year', 'pos', 'age', 'games', 'minutes_per_game', '2pa', '3pa', 'trb', 'ast', 'stl', 'tov']]
+        Y= self.donnes['pts']    
+        pos_int=self.getdummies(self.donnes,'pos')  
+        X=X.drop(columns=['pos']) 
+        X=pd.concat([X,pos_int], axis=1)
+         
+        return X, Y

@@ -6,6 +6,7 @@ import json
 import pandas as pd 
 import numpy as np
 import os
+from exceptions import Erreur_structure_de_donnes, Valeur_hors_norme, CategorieInvalide
 
 class ModeleNBA:
 
@@ -97,3 +98,20 @@ class ModeleNBA:
         if not os.path.exists(chemin):
             raise FileNotFoundError("Le fichier modele_nba est introuvable")
         self.modele= joblib.load(chemin)
+
+    def predire(self, joueur):
+        variables = [ 'season_year', 'pos', 'age', 'games', 'minutes_per_game', '2pa', '3pa','trb', 'ast', 'stl', 'tov' ]
+        chemin= os.path.join(self.racine_projet,'donnees','metadata.json')
+
+        if not os.path.exists(chemin):
+            raise FileNotFoundError(f"Le fichier metadata.json n'existe pas")
+        with open(chemin, "r") as f:
+            dictionnaire=json.load(f)
+
+
+        if not isinstance(joueur, dict):
+            raise Erreur_structure_de_donnes("Vous n'avez pas rentrer un dictionnaire")
+        
+        for variable in variables:
+            if variable not in joueur:
+                raise Erreur_structure_de_donnes(f"La variable {variable} est manquante")

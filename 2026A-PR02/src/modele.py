@@ -90,3 +90,10 @@ class ModeleNBA:
         chemin= os.path.join(chemin_racine, 'metadata.json')
         with open(chemin, "w") as f:
             json.dump(metadata, f, indent=4)        
+
+    def charger(self):
+
+        chemin=os.path.join(self.racine_projet,'modeles','modele_nba.joblib' )
+        if not os.path.exists(chemin):
+            raise FileNotFoundError("Le fichier modele_nba est introuvable")
+        self.modele= joblib.load(chemin)

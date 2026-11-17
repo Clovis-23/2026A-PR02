@@ -21,3 +21,14 @@ class JeuDeDonnees :
         df.to_csv(chemin_final, index=False)
         self.df = df
         return df
+
+    def charger_csv(self, nom_fichier: str) -> pd.DataFrame:
+        """Charge un CSV du dossier donnees, en vérifiant qu'il existe."""
+        dossier_script = os.path.dirname(__file__)
+        racine_projet = os.path.dirname(dossier_script)
+        chemin = os.path.join(racine_projet, "donnees", "nba_joueur_saison_2005_2024.csv")
+
+        if not os.path.exists(chemin):
+            raise FileNotFoundError(f"Fichier introuvable : {chemin}")
+        self.df = pd.read_csv(chemin) 
+        return self.df

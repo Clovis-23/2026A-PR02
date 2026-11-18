@@ -6,7 +6,12 @@ import json
 import pandas as pd 
 import numpy as np
 import os
-from exceptions import Erreur_structure_de_donnes, Valeur_hors_norme, CategorieInvalide
+if __package__:
+    from .exceptions import Erreur_structure_de_donnes
+    from .variables import VariableCategorielle, VariableIntervalles
+else:
+    from exceptions import Erreur_structure_de_donnes
+    from variables import VariableCategorielle, VariableIntervalles
 
 class ModeleNBA:
 
@@ -115,3 +120,86 @@ class ModeleNBA:
         for variable in variables:
             if variable not in joueur:
                 raise Erreur_structure_de_donnes(f"La variable {variable} est manquante")
+        # if joueur['pos'] not in dictionnaire['categories']:
+        #     raise ValueError(f"La position n'existe pas")
+        for i in joueur:
+            if i not in variables:
+                raise Erreur_structure_de_donnes(f"La variable {i} est inconnue")
+
+            if i == "pos":
+                variable = VariableCategorielle(i, dictionnaire["categories"])
+                variable.valider(joueur[i])
+
+            else:
+                variable = VariableIntervalles(
+                    i,
+                    dictionnaire["intervalles"][i]["min"],
+                    dictionnaire["intervalles"][i]["max"]
+                )
+
+                try:
+                    valeur = float(joueur[i])
+                except (ValueError, TypeError):
+                    raise Erreur_structure_de_donnes(
+                        f"La variable {i} doit être numérique"
+                    )
+
+                variable.valider(valeur)
+        
+
+        joueur= pd.DataFrame([joueur])
+        joueur_int=self.getdummies(joueur,'pos')
+        joueur=joueur.drop(columns=['pos']) 
+        joueur=pd.concat([joueur,joueur_int], axis=1)
+
+        try:
+            joueur = joueur.apply(pd.to_numeric, errors="raise")
+
+        except ValueError:
+            raise Erreur_structure_de_donnes("Les statistiques doivent être numériques")   
+        
+        for p in joueur:
+
+            if pd.isna(joueur[p].iloc[0]):
+                raise ValueError(f"La variable {p} est manquante")
+            
+            if p not in dictionnaire['colonnes']:
+                raise Erreur_structure_de_donnes(f"La variable {p} est inconnue")
+            
+            if joueur[p].iloc[0]< 0:
+                raise ValueError('Vous avez entré un nombre négatif')
+            
+            # if joueur[p].iloc[0] <= dictionnaire['intervalles'][p]['max'] and joueur[p].iloc[0] >= dictionnaire['intervalles'][p]['min']:
+            #     continue
+
+            # else:
+            #     raise ValueError('Valeur out of range ')
+
+        
+        
+        colonne= dictionnaire['colonnes']
+        joueur=joueur.reindex(columns=colonne, fill_value=0)
+        prediction=self.modele.predict(joueur)
+        points =float(prediction[0])
+
+        if points<0:
+            raise ValueError(
+        "Le modèle a calculé des points négatifs. "
+        "Vérifiez les données fournies."
+    )
+        return points
+    
+if __name__ == "__main__":
+    nba = ModeleNBA()
+
+    nba.entrainer()
+
+    mae, mae_baseline, verification = nba.evaluer()
+    print("MAE :", mae)
+    print("MAE baseline :", mae_baseline)
+    print("Vérification NumPy :", verification)
+
+    nba.sauvegarder()
+    nba.sauvegarder_metadata()
+
+    print("Modèle entraîné et sauvegardé avec succès !")

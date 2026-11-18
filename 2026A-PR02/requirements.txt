@@ -1,3 +1,6 @@
 pandas
 matplotlib
 openpyxl
+numpy
+scikit-learn
+joblib

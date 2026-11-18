@@ -37,7 +37,8 @@ class ModeleNBA:
         X=X.drop(columns=['pos']) 
         X=pd.concat([X,pos_int], axis=1)
         return X, Y
-     def entrainer(self):
+    
+    def entrainer(self):
             X,Y= self.preparer_donnees()
             X_train, X_test, Y_train, Y_test = train_test_split(
             X, Y,

@@ -85,21 +85,39 @@ def saisir_un_nombre (application, colonne, texte) :
     minimum = intervalle["min"]
     maximum = intervalle["max"]
     entier = colonne in CHAMPS_ENTIERS
-    valeur_initiale = 0.0 if colonne == "trb" else minimum
-    valeur = st.number_input(
+    return st.number_input(
         texte,
-        value=int(valeur_initiale) if entier else float(valeur_initiale),
+        min_value=int(minimum) if entier else float(minimum),
+        max_value=int(maximum) if entier else float(maximum),
+        value=int(minimum) if entier else float(minimum),
         step=1 if entier else 0.1,
         key=colonne,
         help=f"Valeur attendue entre {minimum} et {maximum}.",
-        on_change=effacer_resultat,
-    )
-    if not math.isfinite(valeur) or valeur < minimum or valeur > maximum:
-        st.error(f"Valeur invalide. Entrez entre {minimum} et {maximum}.")
-    return valeur
+        on_change=effacer_resultat,)
 
 def valider_joueur(joueur: dict, metadata: dict) :
     profil = joueur.copy()
-    for colonne, nom in CHAMPS_NUMERIQUES.items() :
-        texte = str(joueur[colonne]).strip() 
-    pass
+    for colonne, nom in CHAMPS_NUMERIQUES.items():
+        valeur = joueur[colonne]
+        minimum = metadata["intervalles"][colonne]["min"]
+        maximum = metadata["intervalles"][colonne]["max"]
+        if valeur < minimum or valeur > maximum:
+            raise ValueError(f"{nom} : entrez une valeur entre {minimum} et {maximum}.")
+        profil[colonne] = valeur
+    return profil
+
+
+def graphique(nom_joueur: str, prediction: float) -> plt.Figure:
+    """Renvoie le graphique. Échoue si le CSV est absent ou invalide."""
+    chemin = os.path.join(racine_projet, "donnees", "nba_joueur_saison_2005_2024.csv")
+    if not os.path.exists(chemin):
+        raise FileNotFoundError("Le fichier nba_joueur_saison_2005_2024.csv est introuvable.")
+    df = pd.read_csv(chemin)
+    figure, ax = plt.subplots()
+    ax.hist(df["pts"], bins=20)
+    ax.axvline(prediction, color="red", linestyle="--", label=f"{nom_joueur} : {prediction:.2f} points")
+    ax.set_title("Distribution des points par match")
+    ax.set_xlabel("Points par match")
+    ax.set_ylabel("Nombre de joueurs-saisons")
+    ax.legend() 
+    return figure 

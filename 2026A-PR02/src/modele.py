@@ -37,19 +37,7 @@ class ModeleNBA:
         X=X.drop(columns=['pos']) 
         X=pd.concat([X,pos_int], axis=1)
         return X, Y
-    
-    def evaluer(self):
-        
-        predictions = self.modele.predict(self.X_test)    
-        mae = mean_absolute_error(self.Y_test, predictions)
-        moy= self.Y_train.mean()
-        predictions_baseline=[moy for joueur in self.Y_test]
-        mae_baseline = mean_absolute_error(self.Y_test, predictions_baseline )
-        mae_verif=np.abs(self.Y_test - predictions).mean()
-        verification= np.isclose(mae,mae_verif)
-        
-        return mae,mae_baseline, verification
-    def entrainer(self):
+     def entrainer(self):
             X,Y= self.preparer_donnees()
             X_train, X_test, Y_train, Y_test = train_test_split(
             X, Y,
@@ -62,6 +50,20 @@ class ModeleNBA:
             self.Y_train=Y_train
             self.Y_test=Y_test
             return X_train, X_test
+    
+    
+    def evaluer(self):
+        
+        predictions = self.modele.predict(self.X_test)    
+        mae = mean_absolute_error(self.Y_test, predictions)
+        moy= self.Y_train.mean()
+        predictions_baseline=[moy for joueur in self.Y_test]
+        mae_baseline = mean_absolute_error(self.Y_test, predictions_baseline )
+        mae_verif=np.abs(self.Y_test - predictions).mean()
+        verification= np.isclose(mae,mae_verif)
+        
+        return mae,mae_baseline, verification
+   
         
     def sauvegarder(self):
             chemin= os.path.join(self.racine_projet,"modeles" )
@@ -115,8 +117,7 @@ class ModeleNBA:
         for variable in variables:
             if variable not in joueur:
                 raise Erreur_structure_de_donnes(f"La variable {variable} est manquante")
-        # if joueur['pos'] not in dictionnaire['categories']:
-        #     raise ValueError(f"La position n'existe pas")
+        joueur = joueur.copy()
         for i in joueur:
             if i not in variables:
                 raise Erreur_structure_de_donnes(f"La variable {i} est inconnue")
@@ -139,7 +140,10 @@ class ModeleNBA:
                         f"La variable {i} doit être numérique"
                     )
 
+                if pd.isna(valeur):
+                    raise ValueError(f"La variable {i} est manquante")
                 variable.valider(valeur)
+                joueur[i] = valeur
         
 
         joueur= pd.DataFrame([joueur])
@@ -147,31 +151,6 @@ class ModeleNBA:
         joueur=joueur.drop(columns=['pos']) 
         joueur=pd.concat([joueur,joueur_int], axis=1)
 
-        try:
-            joueur = joueur.apply(pd.to_numeric, errors="raise")
-
-        except ValueError:
-            raise Erreur_structure_de_donnes("Les statistiques doivent être numériques")   
-        
-        for p in joueur:
-
-            if pd.isna(joueur[p].iloc[0]):
-                raise ValueError(f"La variable {p} est manquante")
-            
-            if p not in dictionnaire['colonnes']:
-                raise Erreur_structure_de_donnes(f"La variable {p} est inconnue")
-            
-            if joueur[p].iloc[0]< 0:
-                raise ValueError('Vous avez entré un nombre négatif')
-            
-            # if joueur[p].iloc[0] <= dictionnaire['intervalles'][p]['max'] and joueur[p].iloc[0] >= dictionnaire['intervalles'][p]['min']:
-            #     continue
-
-            # else:
-            #     raise ValueError('Valeur out of range ')
-
-        
-        
         colonne= dictionnaire['colonnes']
         joueur=joueur.reindex(columns=colonne, fill_value=0)
         prediction=self.modele.predict(joueur)

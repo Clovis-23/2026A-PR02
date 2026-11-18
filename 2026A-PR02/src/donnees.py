@@ -129,7 +129,6 @@ class JeuDeDonnees():
 
 # print(donnees_finales.isna().sum()) 0 
 
-
 if __name__ == "__main__":
     jeu = JeuDeDonnees()
     jeu.preparer()
@@ -140,13 +139,3 @@ if __name__ == "__main__":
     plt.title('histogramme de la colonne pts')
     plt.savefig('histogramme_pts.png')
     plt.show()
-    
-
-
-
-
-
-
-
-
-

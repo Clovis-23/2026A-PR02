@@ -5,6 +5,24 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 
+dossier_script = os.path.dirname(__file__)
+racine_projet = os.path.dirname(dossier_script)
+
+
+CHAMPS_NUMERIQUES = {
+    "season_year": "Année de la saison",
+    "age": "Âge du joueur",
+    "games": "Nombre de matchs dans la saison",
+    "minutes_per_game": "Minutes par match",
+    "2pa": "Tirs à 2 points tentés par match",
+    "3pa": "Tirs à 3 points tentés par match",
+    "trb": "Rebonds par match",
+    "ast": "Passes décisives par match",
+    "stl": "Interceptions par match",
+    "tov": "Balles perdues par match",
+}
+CHAMPS_ENTIERS = {"season_year", "age", "games"}
+
 class Application :
     def __init__ (self) :
         # Ici, on charge le modèle déjà entraîné.
@@ -44,3 +62,44 @@ class Application :
             else :
                 historique.append(nouvelle_ligne)
             return historique
+
+    def retirer_ligne_histo(self, numero_ligne):
+        historique = self.consulter_historique()
+        if historique is None:
+            return False
+        if numero_ligne < 0 or numero_ligne >= len(historique):
+            return False
+
+        historique = historique.drop(index=numero_ligne).reset_index(drop=True)
+        historique.to_csv(self.chemin_historique, index=False)
+        return True
+
+#on passe a l'interface pur avec streamlit
+
+def effacer_resultat():
+    if "derniere_prediction" in st.session_state:
+        del st.session_state["derniere_prediction"]
+
+def saisir_un_nombre (application, colonne, texte) :
+    intervalle = application.metadata["intervalles"][colonne]
+    minimum = intervalle["min"]
+    maximum = intervalle["max"]
+    entier = colonne in CHAMPS_ENTIERS
+    valeur_initiale = 0.0 if colonne == "trb" else minimum
+    valeur = st.number_input(
+        texte,
+        value=int(valeur_initiale) if entier else float(valeur_initiale),
+        step=1 if entier else 0.1,
+        key=colonne,
+        help=f"Valeur attendue entre {minimum} et {maximum}.",
+        on_change=effacer_resultat,
+    )
+    if not math.isfinite(valeur) or valeur < minimum or valeur > maximum:
+        st.error(f"Valeur invalide. Entrez entre {minimum} et {maximum}.")
+    return valeur
+
+def valider_joueur(joueur: dict, metadata: dict) :
+    profil = joueur.copy()
+    for colonne, nom in CHAMPS_NUMERIQUES.items() :
+        texte = str(joueur[colonne]).strip() 
+    pass

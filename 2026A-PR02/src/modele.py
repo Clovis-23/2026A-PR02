@@ -203,3 +203,5 @@ if __name__ == "__main__":
     nba.sauvegarder_metadata()
 
     print("Modèle entraîné et sauvegardé avec succès !")
+
+

@@ -121,3 +121,13 @@ def graphique(nom_joueur: str, prediction: float) -> plt.Figure:
     ax.set_ylabel("Nombre de joueurs-saisons")
     ax.legend() 
     return figure 
+
+def main():
+    st.title("Prédiction des points NBA")
+    st.write("Entrez les valeurs d'un joueur type pour calculer ses points par match.")
+    pass
+
+
+
+if __name__ == "__main__":
+    main()

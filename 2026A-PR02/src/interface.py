@@ -125,6 +125,16 @@ def graphique(nom_joueur: str, prediction: float) -> plt.Figure:
 def main():
     st.title("Prédiction des points NBA")
     st.write("Entrez les valeurs d'un joueur type pour calculer ses points par match.")
+
+    try:
+        application = Application()
+    except Exception as e:
+        st.error(f"Impossible de charger le modèle : {e}")
+        st.stop()
+
+    nom_joueur = st.text_input("Nom du joueur")
+    pos = st.radio("Poste", application.metadata["categories"])
+    joueur = {"pos": pos}
     pass
 
 

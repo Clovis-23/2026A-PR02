@@ -30,6 +30,7 @@ class Application :
 
         self.modele = ModeleNBA()
         self.modele.charger()
+        self.chemin_historique = os.path.join(racine_projet, "historique_predictions.csv")
 
         chemin_metadata = os.path.join(racine_projet, "donnees", "metadata.json")
         with open(chemin_metadata, "r", encoding="utf-8") as fichier:
@@ -42,7 +43,7 @@ class Application :
 
     def predire_profil (self, joueur) :
         prediction = self.modele.predire(joueur)
-        pass
+        return float(prediction)
     
     def consulter_historique(self) :
         """Renvoie l'historique, ou None s'il n'y en a pas encore."""
@@ -53,15 +54,9 @@ class Application :
     def enregistrer_prediction(self, nom_joueur, joueur, prediction) :
             nouvelle_ligne = joueur.copy()
             nouvelle_ligne["nom_joueur"] = nom_joueur
-            nouvelle_ligne["points prédits"] = prediction
-            ligne_final = pd.DataFrame([nouvelle_ligne])
-    
-            historique = self.consulter_historique()
-            if historique is None :
-                historique = ligne_final
-            else :
-                historique.append(nouvelle_ligne)
-            return historique
+            nouvelle_ligne["points_predits"] = prediction
+            pd.DataFrame([nouvelle_ligne]).to_csv(self.chemin_historique, mode="a",
+                    header=not os.path.exists(self.chemin_historique), index=False)
 
     def retirer_ligne_histo(self, numero_ligne):
         historique = self.consulter_historique()
@@ -135,9 +130,33 @@ def main():
     nom_joueur = st.text_input("Nom du joueur")
     pos = st.radio("Poste", application.metadata["categories"])
     joueur = {"pos": pos}
-    pass
+    for colonne, texte in CHAMPS_NUMERIQUES.items():
+        joueur[colonne] = saisir_un_nombre(application, colonne, texte)
+
+    if st.button("Prédire"):
+        if nom_joueur.strip() == "":
+            st.warning("Entrez le nom du joueur avant de prédire.")
+        else:
+            try:
+                joueur_valide = valider_joueur(joueur, application.metadata)
+                prediction = application.predire_profil(joueur_valide)
+                st.success(f"{nom_joueur} devrait marquer {prediction:.2f} points par match.")
+                application.enregistrer_prediction(nom_joueur, joueur_valide, prediction)
+                fig = graphique(nom_joueur, prediction)
+                st.pyplot(fig)
+                plt.close(fig)
+            except ValueError as e:
+                st.error(str(e))
+
+    if st.checkbox("Afficher l'historique"):
+        historique = application.consulter_historique()
+        if historique is None:
+            st.info("Aucune prédiction pour l'instant.")
+        else:
+            st.dataframe(historique)
+    
 
 
-
+ 
 if __name__ == "__main__":
     main()

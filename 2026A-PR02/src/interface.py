@@ -25,6 +25,22 @@ class Application :
     def predire_profil (self, joueur) :
         prediction = self.modele.predire(joueur)
         pass
+    
+    def consulter_historique(self) :
+        """Renvoie l'historique, ou None s'il n'y en a pas encore."""
+        if not os.path.exists(self.chemin_historique):
+            return None
+        return pd.read_csv(self.chemin_historique)
 
+    def enregistrer_prediction(self, nom_joueur, joueur, prediction) :
+            nouvelle_ligne = joueur.copy()
+            nouvelle_ligne["nom_joueur"] = nom_joueur
+            nouvelle_ligne["points prédits"] = prediction
+            ligne_final = pd.DataFrame([nouvelle_ligne])
     
-    
+            historique = self.consulter_historique()
+            if historique is None :
+                historique = ligne_final
+            else :
+                historique.append(nouvelle_ligne)
+            return historique

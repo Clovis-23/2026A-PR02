@@ -71,19 +71,6 @@ if __name__ == "__main__":
 # import os 
 
 
-# # verifier tt les cas limites dans mes donnes taille,
-# # colonnes importantes avec lignes manquantes, pas de minutes jouées negative ..etc
-# # --
-# # print(donnes.columns) voir les titres de mon csv 
-
-# # print(donnes.shape) (26429, 32) taille de mon tableau
-
-# # print(donnes['pos'].isna().sum()) 867 
-
-# # print(donnes['Minutes Played'].min())
-
-
-
 # class JeuDeDonnees():
 #     def __init__(self):
 #         self.df=None
@@ -120,11 +107,6 @@ if __name__ == "__main__":
             
 #         return self.df
 
-# # nba_2005=donnes[estnba & (donnes['season_year']>=2005)]
-
-# # jouees= nba_2005[nba_2005['games']>= 20]
-
-# # print(jouees['pos'].isna().sum()) 0 les 3 filtres que j'ai fait on deja enlver les pos null 
 
 
 # # print(donnees_finales.isna().sum()) 0 

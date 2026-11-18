@@ -1,2 +1,4 @@
 pos,season_year,age,games,minutes_per_game,2pa,3pa,trb,ast,stl,tov,nom_joueur,points_predits
 SG,2013,22,72,15.9,5.4,3.4,3.5,4.6,0.85,1.4,test_joueur1,11.133997234414068
+PG,2018,23,59,12.6,3.4,2.8,4.2,2.4,0.85,1.25,test_joueur2,7.5686252387543504
+SF,2022,28,26,2.8,0.4,0.4,0.8,1.0,0.2,0.5,tes_3,0.7553884077001669

@@ -118,6 +118,7 @@ def graphique(nom_joueur: str, prediction: float) -> plt.Figure:
     return figure 
 
 def main():
+    st.set_page_config(page_title="Prédiction de points NBA", page_icon="🏀", layout="centered")
     st.title("Prédiction des points NBA")
     st.write("Entrez les valeurs d'un joueur type pour calculer ses points par match.")
 
@@ -138,7 +139,7 @@ def main():
             joueur[colonne] = saisir_un_nombre(application, colonne, texte)
 
     if st.button("Prédire"):
-        if nom_joueur.strip() == "":
+        if nom_joueur == "":
             st.warning("Entrez le nom du joueur avant de prédire.")
         else:
             try:
@@ -152,7 +153,7 @@ def main():
             except ValueError as e:
                 st.error(str(e))
 
-    if st.checkbox("Afficher l'historique"):
+    if st.toggle("Afficher l'historique"):
         historique = application.consulter_historique()
         if historique is None:
             st.info("Aucune prédiction pour l'instant. Veuillez d'abord faire une prédiction")

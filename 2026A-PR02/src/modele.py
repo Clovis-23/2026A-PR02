@@ -104,7 +104,7 @@ class ModeleNBA:
             raise FileNotFoundError("Le fichier modele_nba est introuvable")
         self.modele= joblib.load(chemin)
 
-        def predire(self, joueur):
+    def predire(self, joueur):
         variables = [ 'season_year', 'pos', 'age', 'games', 'minutes_per_game', '2pa', '3pa','trb', 'ast', 'stl', 'tov' ]
         chemin= os.path.join(self.racine_projet,'donnees','metadata.json')
 

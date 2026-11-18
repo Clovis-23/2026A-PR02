@@ -117,9 +117,6 @@ def graphique(nom_joueur: str, prediction: float) -> plt.Figure:
     ax.legend() 
     return figure 
 
-def retirer_ligne(num_ligne) :
-    pass
-
 def main():
     st.set_page_config(page_title="Prédiction de points NBA", page_icon="🏀", layout="centered")
     st.title("Prédiction des points NBA")
@@ -156,12 +153,25 @@ def main():
             except ValueError as e:
                 st.error(str(e))
 
+    historique = application.consulter_historique()
+    num_ligne = st.number_input("Saisir le numéro de la ligne a retirer, 0 = première ligne", min_value=0, step=1, value=0)
+    if st.button("Retirer une ligne de l'historique") :
+        if historique is None :
+            st.warning("Impossible de retirer une ligne car l'historique est vierge")
+        else :
+            if application.retirer_ligne_histo(int(num_ligne)) :
+                st.success("Ligne retirée")
+            else :
+                st.warning("Numéro invalide !")
+
     if st.toggle("Afficher l'historique"):
-        historique = application.consulter_historique()
+        
         if historique is None:
             st.info("Aucune prédiction pour l'instant. Veuillez d'abord faire une prédiction")
         else:
             st.dataframe(historique)
+
+    
     
 if __name__ == "__main__":
     main()

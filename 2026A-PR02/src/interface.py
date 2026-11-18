@@ -117,6 +117,9 @@ def graphique(nom_joueur: str, prediction: float) -> plt.Figure:
     ax.legend() 
     return figure 
 
+def retirer_ligne(num_ligne) :
+    pass
+
 def main():
     st.set_page_config(page_title="Prédiction de points NBA", page_icon="🏀", layout="centered")
     st.title("Prédiction des points NBA")
@@ -162,3 +165,6 @@ def main():
     
 if __name__ == "__main__":
     main()
+
+# commande a mettre dans le terminal :
+# streamlit run src/interface.py

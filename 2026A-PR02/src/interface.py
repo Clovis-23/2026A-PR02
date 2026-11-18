@@ -93,7 +93,7 @@ def saisir_un_nombre (application, colonne, texte) :
         step=1 if entier else 0.1,
         key=colonne,
         help=f"Valeur attendue entre {minimum} et {maximum}.",
-        on_change=effacer_resultat,)
+        on_change=effacer_resultat)
 
 def valider_joueur(joueur: dict, metadata: dict) :
     profil = joueur.copy()

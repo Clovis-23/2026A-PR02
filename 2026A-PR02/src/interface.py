@@ -163,9 +163,9 @@ def main():
                 st.success("Ligne retirée")
             else :
                 st.warning("Numéro invalide !")
-
+                
+    historique = application.consulter_historique()
     if st.toggle("Afficher l'historique"):
-        
         if historique is None:
             st.info("Aucune prédiction pour l'instant. Veuillez d'abord faire une prédiction")
         else:

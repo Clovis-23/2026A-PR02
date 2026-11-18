@@ -104,4 +104,4 @@ class ModeleNBA:
             raise FileNotFoundError("Le fichier modele_nba est introuvable")
         self.modele= joblib.load(chemin)
 
-    
+        

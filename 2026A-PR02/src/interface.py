@@ -127,11 +127,15 @@ def main():
         st.error(f"Impossible de charger le modèle : {e}")
         st.stop()
 
-    nom_joueur = st.text_input("Nom du joueur")
+    nom_joueur = st.text_input("Nom du joueur").strip()
     pos = st.radio("Poste", application.metadata["categories"])
     joueur = {"pos": pos}
     for colonne, texte in CHAMPS_NUMERIQUES.items():
-        joueur[colonne] = saisir_un_nombre(application, colonne, texte)
+        if colonne == "age" :
+            intervalle = application.metadata["intervalles"]["age"]
+            joueur[colonne] = st.slider(texte, int(intervalle["min"]), int(intervalle["max"]))
+        else :
+            joueur[colonne] = saisir_un_nombre(application, colonne, texte)
 
     if st.button("Prédire"):
         if nom_joueur.strip() == "":
@@ -151,12 +155,9 @@ def main():
     if st.checkbox("Afficher l'historique"):
         historique = application.consulter_historique()
         if historique is None:
-            st.info("Aucune prédiction pour l'instant.")
+            st.info("Aucune prédiction pour l'instant. Veuillez d'abord faire une prédiction")
         else:
             st.dataframe(historique)
     
-
-
- 
 if __name__ == "__main__":
     main()

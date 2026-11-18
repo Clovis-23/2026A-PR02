@@ -6,6 +6,12 @@ import json
 import pandas as pd 
 import numpy as np
 import os
+if __package__:
+    from .exceptions import Erreur_structure_de_donnes
+    from .variables import VariableCategorielle, VariableIntervalles
+else:
+    from exceptions import Erreur_structure_de_donnes
+    from variables import VariableCategorielle, VariableIntervalles
 
 class ModeleNBA:
 
@@ -36,3 +42,164 @@ class ModeleNBA:
         X=pd.concat([X,pos_int], axis=1)
          
         return X, Y
+    
+    def evaluer(self):
+        
+        predictions = self.modele.predict(self.X_test)    
+        mae = mean_absolute_error(self.Y_test, predictions)
+        moy= self.Y_train.mean()
+        predictions_baseline=[moy for joueur in self.Y_test]
+        mae_baseline = mean_absolute_error(self.Y_test, predictions_baseline )
+        mae_verif=np.abs(self.Y_test - predictions).mean()
+        verification= np.isclose(mae,mae_verif)
+        
+        return mae,mae_baseline, verification
+    def entrainer(self):
+            X,Y= self.preparer_donnees()
+            X_train, X_test, Y_train, Y_test = train_test_split(
+            X, Y,
+            test_size=0.2,
+            random_state=42
+            )
+            self.modele.fit(X_train, Y_train)
+            self.X_train=X_train
+            self.X_test=X_test
+            self.Y_train=Y_train
+            self.Y_test=Y_test
+            return X_train, X_test
+        
+    def sauvegarder(self):
+            chemin= os.path.join(self.racine_projet,"modeles" )
+            os.makedirs(chemin, exist_ok=True)
+
+            chemin_sauvegarde = os.path.join(chemin, "modele_nba.joblib")
+
+            joblib.dump(self.modele, chemin_sauvegarde)
+
+    def sauvegarder_metadata(self):
+
+        mae,mae_baseline, verification=self.evaluer()
+        X,Y= self.preparer_donnees()
+        colonnes = X.columns.tolist()
+        intervalles={}
+        for colonne in X:
+            intervalles[colonne]={
+            'min':float(X[colonne].min()),
+            'max':float(X[colonne].max())
+            }
+        positions = self.donnes['pos'].unique().tolist()
+        metadata={"colonnes": colonnes, "mae": float(mae) ,   "intervalles": intervalles
+        , "categories":positions
+            }
+        chemin_racine= os.path.join(self.racine_projet, 'donnees')
+        os.makedirs(chemin_racine, exist_ok=True)
+        chemin= os.path.join(chemin_racine, 'metadata.json')
+        with open(chemin, "w") as f:
+            json.dump(metadata, f, indent=4)        
+
+    def charger(self):
+
+        chemin=os.path.join(self.racine_projet,'modeles','modele_nba.joblib' )
+        if not os.path.exists(chemin):
+            raise FileNotFoundError("Le fichier modele_nba est introuvable")
+        self.modele= joblib.load(chemin)
+
+        def predire(self, joueur):
+        variables = [ 'season_year', 'pos', 'age', 'games', 'minutes_per_game', '2pa', '3pa','trb', 'ast', 'stl', 'tov' ]
+        chemin= os.path.join(self.racine_projet,'donnees','metadata.json')
+
+        if not os.path.exists(chemin):
+            raise FileNotFoundError(f"Le fichier metadata.json n'existe pas")
+        with open(chemin, "r") as f:
+            dictionnaire=json.load(f)
+
+
+        if not isinstance(joueur, dict):
+            raise Erreur_structure_de_donnes("Vous n'avez pas rentrer un dictionnaire")
+        
+        for variable in variables:
+            if variable not in joueur:
+                raise Erreur_structure_de_donnes(f"La variable {variable} est manquante")
+        # if joueur['pos'] not in dictionnaire['categories']:
+        #     raise ValueError(f"La position n'existe pas")
+        for i in joueur:
+            if i not in variables:
+                raise Erreur_structure_de_donnes(f"La variable {i} est inconnue")
+
+            if i == "pos":
+                variable = VariableCategorielle(i, dictionnaire["categories"])
+                variable.valider(joueur[i])
+
+            else:
+                variable = VariableIntervalles(
+                    i,
+                    dictionnaire["intervalles"][i]["min"],
+                    dictionnaire["intervalles"][i]["max"]
+                )
+
+                try:
+                    valeur = float(joueur[i])
+                except (ValueError, TypeError):
+                    raise Erreur_structure_de_donnes(
+                        f"La variable {i} doit être numérique"
+                    )
+
+                variable.valider(valeur)
+        
+
+        joueur= pd.DataFrame([joueur])
+        joueur_int=self.getdummies(joueur,'pos')
+        joueur=joueur.drop(columns=['pos']) 
+        joueur=pd.concat([joueur,joueur_int], axis=1)
+
+        try:
+            joueur = joueur.apply(pd.to_numeric, errors="raise")
+
+        except ValueError:
+            raise Erreur_structure_de_donnes("Les statistiques doivent être numériques")   
+        
+        for p in joueur:
+
+            if pd.isna(joueur[p].iloc[0]):
+                raise ValueError(f"La variable {p} est manquante")
+            
+            if p not in dictionnaire['colonnes']:
+                raise Erreur_structure_de_donnes(f"La variable {p} est inconnue")
+            
+            if joueur[p].iloc[0]< 0:
+                raise ValueError('Vous avez entré un nombre négatif')
+            
+            # if joueur[p].iloc[0] <= dictionnaire['intervalles'][p]['max'] and joueur[p].iloc[0] >= dictionnaire['intervalles'][p]['min']:
+            #     continue
+
+            # else:
+            #     raise ValueError('Valeur out of range ')
+
+        
+        
+        colonne= dictionnaire['colonnes']
+        joueur=joueur.reindex(columns=colonne, fill_value=0)
+        prediction=self.modele.predict(joueur)
+        points =float(prediction[0])
+
+        if points<0:
+            raise ValueError(
+        "Le modèle a calculé des points négatifs. "
+        "Vérifiez les données fournies."
+    )
+        return points
+    
+if __name__ == "__main__":
+    nba = ModeleNBA()
+
+    nba.entrainer()
+
+    mae, mae_baseline, verification = nba.evaluer()
+    print("MAE :", mae)
+    print("MAE baseline :", mae_baseline)
+    print("Vérification NumPy :", verification)
+
+    nba.sauvegarder()
+    nba.sauvegarder_metadata()
+
+    print("Modèle entraîné et sauvegardé avec succès !")

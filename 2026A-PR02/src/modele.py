@@ -24,8 +24,8 @@ class ModeleNBA:
     
 
     def preparer_donnees(self):
-
-        chemin=os.path.join(self.racine_projet,"donnees","nba_nettoye.csv")
+        
+        chemin=os.path.join(self.racine_projet,"donnees","nba_joueur_saison_2005_2024.csv")
 
         if not os.path.exists(chemin):
             raise FileNotFoundError("Le fichier NBA est introuvable")
@@ -36,7 +36,6 @@ class ModeleNBA:
         pos_int=self.getdummies(self.donnes,'pos')  
         X=X.drop(columns=['pos']) 
         X=pd.concat([X,pos_int], axis=1)
-         
         return X, Y
     
     def evaluer(self):

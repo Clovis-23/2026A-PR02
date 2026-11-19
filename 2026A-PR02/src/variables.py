@@ -1,7 +1,4 @@
-if __package__:
-    from .exceptions import Valeur_hors_norme, CategorieInvalide
-else:
-    from exceptions import Valeur_hors_norme, CategorieInvalide
+from src.exceptions import Valeur_hors_norme, CategorieInvalide
 
 class Variable():
 

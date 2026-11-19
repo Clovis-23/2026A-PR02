@@ -38,4 +38,4 @@ def test_age_invalide():
         age.valider(50)
 
 
-# tester .venv/bin/python -m pytest tests/test_donnees.py -v
+# python -m pytest tests/test_donnees.py -v

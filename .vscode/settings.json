@@ -1,4 +1,5 @@
 {
+    "terminal.integrated.cwd": "${workspaceFolder}/2026A-PR02",
     "python.useEnvironmentsExtension": false,
     "python.defaultInterpreterPath": "/Library/Frameworks/Python.framework/Versions/3.13/bin/python3",
     "python.languageServer": "Pylance",

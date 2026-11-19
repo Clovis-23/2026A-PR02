@@ -1,4 +1,6 @@
 
+"""Teste la structure d'un profil joueur et le calcul de la MAE avec NumPy."""
+
 import pytest
 import numpy as np
 from sklearn.metrics import mean_absolute_error
@@ -8,7 +10,8 @@ from src.exceptions import Erreur_structure_de_donnes
 
 
 # TEST 6 : Mauvaise structure de données
-def test_dictionnaire_invalide():
+def test_dictionnaire_invalide() -> None:
+    """Vérifie qu'une liste est refusée à la place d'un dictionnaire joueur."""
     modele = ModeleNBA()
 
     with pytest.raises(Erreur_structure_de_donnes):
@@ -16,7 +19,8 @@ def test_dictionnaire_invalide():
 
 
 # TEST 7 : Variable manquante
-def test_variable_manquante():
+def test_variable_manquante() -> None:
+    """Vérifie qu'un profil sans âge déclenche l'erreur de structure attendue."""
     modele = ModeleNBA()
 
     joueur = {
@@ -38,7 +42,8 @@ def test_variable_manquante():
 
 
 # TEST 8 : Vérification MAE avec NumPy
-def test_mae_numpy():
+def test_mae_numpy() -> None:
+    """Compare la MAE NumPy à celle de scikit-learn, avec une tolérance numérique."""
     valeurs_reelles = np.array([10, 20, 30])
     predictions = np.array([12, 18, 27])
 

@@ -1,14 +1,25 @@
+"""Prépare les données NBA et permet d'explorer le fichier CSV obtenu."""
+
 import pandas as pd
 import os
 import matplotlib.pyplot as plt
 
 
 class JeuDeDonnees :
-    def __init__ (self) :
+    """Conserve les données chargées pour les préparer et les examiner."""
+
+    def __init__ (self) -> None:
+        """Crée un jeu de données vide ; aucun fichier n'est encore chargé."""
         self.df = None 
 
     def preparer(self) -> pd.DataFrame:
-        """Crée le jeu final 2005-2024 à partir du fichier Excel brut."""
+        """Prépare le CSV à partir du fichier Excel brut et renvoie le tableau.
+
+        Garde les saisons NBA à partir de 2005 avec au moins 20 matchs,
+        sélectionne les colonnes utiles et enregistre le résultat dans donnees.
+        Échoue si le fichier Excel est absent, si une colonne manque ou si
+        le CSV ne peut pas être écrit.
+        """
         dossier_script = os.path.dirname(__file__)
         racine_projet = os.path.dirname(dossier_script)
         chemin_brut = os.path.join(racine_projet, "donnees", "brut", "1946 - Present - NBA Player Stats.xlsx")
@@ -23,7 +34,12 @@ class JeuDeDonnees :
         return df
 
     def charger_csv(self, nom_fichier: str) -> pd.DataFrame:
-        """Charge un CSV du dossier donnees, en vérifiant qu'il existe."""
+        """Charge le CSV NBA du projet, le garde dans self.df et le renvoie.
+
+        Le paramètre nom_fichier n'est pas encore utilisé : le chemin est fixe.
+        Lève FileNotFoundError si le fichier est absent. La lecture peut aussi
+        échouer si son contenu n'est pas un CSV valide.
+        """
         dossier_script = os.path.dirname(__file__)
         racine_projet = os.path.dirname(dossier_script)
         chemin = os.path.join(racine_projet, "donnees", "nba_joueur_saison_2005_2024.csv")
@@ -34,7 +50,11 @@ class JeuDeDonnees :
         return self.df
 
     def afficher_infos(self) -> None:
-        """Affiche les infos d'exploration du jeu chargé."""
+        """Affiche les dimensions, types, valeurs manquantes et postes du jeu.
+
+        Ne renvoie rien. Appeler preparer ou charger_csv avant cette méthode,
+        sinon self.df ne contient pas de tableau et l'affichage échoue.
+        """
         print(self.df.shape)
         print(self.df.columns)
         print(self.df.dtypes)
@@ -43,6 +63,7 @@ class JeuDeDonnees :
         print(self.df["pos"].unique())
 
     def __str__(self) -> str:
+        """Renvoie un court message indiquant si les données sont chargées."""
         if self.df is None:
             return "Dataset pas encore chargé"
         return "Dataset chargé"

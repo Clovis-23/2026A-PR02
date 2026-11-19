@@ -178,3 +178,4 @@ if __name__ == "__main__":
 
 # commande a mettre dans le terminal :
 # streamlit run src/interface.py
+# streamlit run 2026A-PR02/src/interface.py

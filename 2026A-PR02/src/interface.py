@@ -122,6 +122,10 @@ def main():
     st.title("Prédiction des points NBA")
     st.write("Entrez les valeurs d'un joueur type pour calculer ses points par match.")
 
+    if st.button("Générer un joueur aléatoire") :
+          
+        pass
+
     try:
         application = Application()
     except Exception as e:
@@ -163,14 +167,13 @@ def main():
                 st.success("Ligne retirée")
             else :
                 st.warning("Numéro invalide !")
-                
+
     historique = application.consulter_historique()
     if st.toggle("Afficher l'historique"):
         if historique is None:
             st.info("Aucune prédiction pour l'instant. Veuillez d'abord faire une prédiction")
         else:
             st.dataframe(historique)
-
     
     
 if __name__ == "__main__":

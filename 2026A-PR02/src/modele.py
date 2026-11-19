@@ -6,8 +6,8 @@ import json
 import pandas as pd 
 import numpy as np
 import os
-from exceptions import Erreur_structure_de_donnes
-from variables import VariableCategorielle, VariableIntervalles
+from src.exceptions import Erreur_structure_de_donnes
+from src.variables import VariableCategorielle, VariableIntervalles
 
 class ModeleNBA:
 

@@ -213,8 +213,12 @@ Ils utilisent `pytest.raises` pour les erreurs et `pytest.approx` pour les flott
 Ces tests ne couvrent pas encore tout le parcours d'une prédiction ni l'interface.
 Leur réussite ne signifie donc pas que tout le programme est couvert.
 
-**Couverture : à mesurer.** Aucun pourcentage n'a encore été obtenu avec coverage.
-Lorsque cet outil sera installé, les commandes à utiliser sont :
+**Couverture mesurée le 19 novembre 2026 : 19 % sur le dossier `src`, avec 8 tests réussis.**
+Cette mesure inclut l’interface, même si les tests actuels portent sur la logique.
+**Aucun pourcentage minimum n’est exigé par le mandat.**
+
+Commandes pour installer coverage et refaire la mesure depuis le dossier contenant
+`src` et `tests` :
 
 ```bash
 python -m pip install coverage
@@ -222,9 +226,9 @@ python -m coverage run --source=src -m pytest tests/ -v
 python -m coverage report -m
 ```
 
-Reporter ici le pourcentage `TOTAL`, la date et le périmètre `src` utilisé.
-Cette mesure inclut l'interface, même si les tests actuels portent sur la logique.
-Le mandat n'impose pas de seuil minimal.
+Le pourcentage se lit dans la colonne `Cover`, sur la ligne `TOTAL`.
+La mesure réalisée par Codex a utilisé un environnement temporaire avec coverage,
+les mêmes tests et le même périmètre `src`, sans modifier le code du projet.
 
 ## État des éléments à terminer
 
@@ -240,7 +244,6 @@ tests compris. Plusieurs exigences restent cependant à terminer :
   des exceptions précises dans l'interface.
 - Ajouter Streamlit et pytest à `requirements.txt`, puis vérifier l'installation
   et le lancement depuis une copie neuve du dépôt.
-- Mesurer la couverture.
 - Terminer la CI : le workflow actuel est vide et placé dans le sous-dossier.
   GitHub attend `.github/workflows/tests.yml` **à la racine Git**. Il doit lancer
   pytest à chaque push ; aucune exécution verte n'est confirmée à ce stade.

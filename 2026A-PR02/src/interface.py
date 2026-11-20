@@ -169,7 +169,7 @@ def main() -> None:
     st.title("Prédiction des points NBA")
     st.write("Entrez les valeurs d'un joueur type pour calculer ses points par match.")
 
-    if st.button("Générer un joueur aléatoire") :
+    if st.button("Générer un joueur aléatoire (COMING SOON)") :
           
         pass
 

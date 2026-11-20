@@ -4,3 +4,6 @@ openpyxl
 numpy
 scikit-learn
 joblib
+streamlit
+pytest
+coverage

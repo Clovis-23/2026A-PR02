@@ -1,8 +1,8 @@
 """Teste les valeurs usuelles, les limites et les erreurs des variables."""
 
 import pytest
-from src.variables import VariableIntervalles, VariableCategorielle
-from src.exceptions import Valeur_hors_norme, CategorieInvalide
+from variables import VariableIntervalles, VariableCategorielle
+from exceptions import Valeur_hors_norme, CategorieInvalide
 
 # TEST 1 : Position valide
 def test_position_valide() -> None:

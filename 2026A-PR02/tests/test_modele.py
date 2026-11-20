@@ -5,8 +5,8 @@ import pytest
 import numpy as np
 from sklearn.metrics import mean_absolute_error
 
-from src.modele import ModeleNBA
-from src.exceptions import Erreur_structure_de_donnes
+from modele import ModeleNBA
+from exceptions import Erreur_structure_de_donnes
 
 
 # TEST 6 : Mauvaise structure de données

@@ -8,8 +8,16 @@ import json
 import pandas as pd 
 import numpy as np
 import os
-from src.exceptions import Erreur_structure_de_donnes
-from src.variables import VariableCategorielle, VariableIntervalles
+from exceptions import Erreur_structure_de_donnes
+from variables import VariableCategorielle, VariableIntervalles
+
+def annoncer(fonction):
+    """Annonce le début de l'entraînement."""
+    def wrapper(self):
+        print("Entraînement en cours...")
+        return fonction(self)
+    return wrapper
+
 
 class ModeleNBA:
     """Regroupe le modèle de régression et les données utiles à son évaluation."""
@@ -53,6 +61,7 @@ class ModeleNBA:
         X=pd.concat([X,pos_int], axis=1)
         return X, Y
     
+    @annoncer
     def entrainer(self) -> tuple[pd.DataFrame, pd.DataFrame]:
             """Entraîne le modèle et garde les ensembles de test et d'entraînement.
 
@@ -232,3 +241,4 @@ if __name__ == "__main__":
     print("Modèle entraîné et sauvegardé avec succès !")
 
 
+# cd ~/Library/CloudStorage/OneDrive-polymtlus/projet2/2026A-PR02/2026A-PR02/src

@@ -1,6 +1,6 @@
 """Définit les variables d'un joueur et les règles de validation de leurs valeurs."""
 
-from src.exceptions import Valeur_hors_norme, CategorieInvalide
+from exceptions import Valeur_hors_norme, CategorieInvalide
 
 class Variable():
     """Représente une caractéristique du joueur, identifiée par son nom."""

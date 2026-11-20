@@ -34,7 +34,7 @@ class Application :
         Échoue si un fichier nécessaire est absent, illisible ou invalide.
         """
         # Ici, on charge le modèle déjà entraîné.
-        from src.modele import ModeleNBA
+        from modele import ModeleNBA
 
         self.modele = ModeleNBA()
         self.modele.charger()

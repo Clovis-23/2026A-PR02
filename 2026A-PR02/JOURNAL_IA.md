@@ -20,3 +20,5 @@ Les vérifications attribuées à Codex ont été réalisées par l'outil. La re
 Nous utilisions une commande avec `.venv/bin/python`. L'erreur du terminal a montré
 que ce chemin n'existait pas. Nous avons donc choisi d'utiliser le Python de notre
 environnement Conda : `python -m pytest tests/ -v`.
+
+

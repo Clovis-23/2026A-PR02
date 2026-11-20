@@ -87,10 +87,13 @@ les premières lignes, les postes et les valeurs absentes. Un histogramme des
 points est enregistré dans `histogramme_pts.png`. L'analyse des valeurs aberrantes
 reste à préciser avant la remise.
 
-**Source et licence à compléter avant la remise :** ajouter le lien exact de la
-page de téléchargement, le nom de l'auteur ou de l'organisme et la licence du jeu.
-Le nom du fichier seul ne permet pas de confirmer la source ni le droit de
-redistribution. Vérifier aussi le contenu du fichier brut avant sa remise : le
+**Source :** [1946 - Present - NBA Player Stats (regular season)](https://www.kaggle.com/datasets/teteuvinicius/1946-present-nba-player-stats-regular-season),
+publié sur Kaggle par le compte `teteuvinicius`. L’équipe a confirmé avoir utilisé
+ce lien pour obtenir les données.
+
+**Licence : à vérifier avant la remise.** La licence et les droits d’usage éducatif
+et de redistribution ne sont pas encore confirmés. Vérifier la rubrique « License »
+de la page Kaggle. Vérifier aussi le contenu du fichier brut avant sa remise : le
 CSV final ne contient pas de colonne de nom de joueur.
 
 ## Modèle, évaluation et limites
@@ -256,7 +259,7 @@ interceptées dans le bloc de prédiction de l’interface.
 
 Il reste notamment à :
 
-- Compléter la source et la licence des données et les validations de l'auxiliaire.
+- Confirmer la licence des données et compléter les validations de l’auxiliaire.
 - Compléter les vérifications de fichiers, l'utilisation de `with` et la gestion
   des exceptions précises dans l'interface.
 - Vérifier l’installation et le lancement depuis une copie neuve du dépôt.

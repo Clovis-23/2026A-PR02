@@ -12,6 +12,7 @@ Les vérifications attribuées à Codex ont été réalisées par l'outil. La re
 | ChatGPT / Codex | Ajouter les docstrings et les types. | Documentation de 38 fonctions et méthodes. | Codex a comparé la logique avant/après : inchangée ; 8 tests réussis. | Garder les ajouts, à relire par l'équipe. |
 | ChatGPT / Codex | Vérifier les exigences du mandat. | Liste des éléments manquants. | Codex a comparé le PDF aux fichiers du projet. | Utiliser la liste pour préparer la remise. |
 | ChatGPT / Codex | Rédiger le README et les décisions. | Textes explicatifs et schémas du projet. | Codex a consulté la documentation et recalculé les MAE : 0,7481 et 4,8483. | Garder une base à relire ; compléter source, licence et validations. |
+| ChatGPT / Codex | Résoudre l’erreur `No module named 'src'` lors du lancement direct de `modele.py`, avec des imports que nous comprenons. | Remplacement des imports `src.…` par les noms simples des modules dans le code et les tests ; ajout de `pytest.ini` avec `pythonpath = src` pour que pytest trouve les modules. | Codex a exécuté les 8 tests avec succès et vérifié l’entraînement et l’évaluation depuis le dossier `src`, sans remplacer le modèle sauvegardé. | Garder cette correction, qui remplace le choix précédent d’imports avec `src.` et permet le lancement direct du modèle. |
 
 ## Une vérification qui a changé notre décision
 

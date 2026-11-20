@@ -9,6 +9,12 @@ class Variable():
         """Crée une variable à partir du nom de sa colonne dans les données."""
         self.nom=nom
 
+    def valider(self, valeur: str | float) -> bool:
+        """Reçoit une valeur ; les enfants doivent définir sa validation."""
+        raise NotImplementedError(
+            "Chaque classe enfant doit définir sa méthode valider."
+        )
+
 
 class VariableIntervalles(Variable):
     """Représente une valeur numérique comprise entre deux bornes incluses."""

@@ -24,7 +24,7 @@ class ModeleNBA:
 
     def __init__(self) -> None:
         """Crée une régression non entraînée et repère le dossier du projet."""
-        self.modele= LinearRegression()
+        self._modele= LinearRegression()
         dossier_script = os.path.dirname(__file__)
         self.racine_projet = os.path.dirname(dossier_script)
 
@@ -74,7 +74,7 @@ class ModeleNBA:
             test_size=0.2,
             random_state=42
             )
-            self.modele.fit(X_train, Y_train)
+            self._modele.fit(X_train, Y_train)
             self.X_train=X_train
             self.X_test=X_test
             self.Y_train=Y_train
@@ -91,7 +91,7 @@ class ModeleNBA:
         nécessaires à l'évaluation ne sont pas disponibles.
         """
         
-        predictions = self.modele.predict(self.X_test)    
+        predictions = self._modele.predict(self.X_test)    
         mae = mean_absolute_error(self.Y_test, predictions)
         moy= self.Y_train.mean()
         predictions_baseline=[moy for joueur in self.Y_test]
@@ -113,7 +113,7 @@ class ModeleNBA:
 
             chemin_sauvegarde = os.path.join(chemin, "modele_nba.joblib")
 
-            joblib.dump(self.modele, chemin_sauvegarde)
+            joblib.dump(self._modele, chemin_sauvegarde)
 
     def sauvegarder_metadata(self) -> None:
         """Écrit les colonnes, catégories, intervalles et la MAE dans le JSON.
@@ -152,7 +152,7 @@ class ModeleNBA:
         chemin=os.path.join(self.racine_projet,'modeles','modele_nba.joblib' )
         if not os.path.exists(chemin):
             raise FileNotFoundError("Le fichier modele_nba est introuvable")
-        self.modele= joblib.load(chemin)
+        self._modele= joblib.load(chemin)
 
     def predire(self, joueur: dict[str, str | int | float]) -> float:
         """Valide les statistiques du joueur et renvoie ses points prédits par match.
@@ -215,7 +215,7 @@ class ModeleNBA:
 
         colonne= dictionnaire['colonnes']
         joueur=joueur.reindex(columns=colonne, fill_value=0)
-        prediction=self.modele.predict(joueur)
+        prediction=self._modele.predict(joueur)
         points =float(prediction[0])
 
         if points<0:

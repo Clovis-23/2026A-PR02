@@ -6,6 +6,7 @@ import math
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
+from exceptions import Erreur_structure_de_donnes, Valeur_hors_norme, CategorieInvalide
 
 dossier_script = os.path.dirname(__file__)
 racine_projet = os.path.dirname(dossier_script)
@@ -200,7 +201,7 @@ def main() -> None:
                 fig = graphique(nom_joueur, prediction)
                 st.pyplot(fig)
                 plt.close(fig)
-            except ValueError as e:
+            except (ValueError, Erreur_structure_de_donnes, Valeur_hors_norme, CategorieInvalide) as e:
                 st.error(str(e))
 
     historique = application.consulter_historique()

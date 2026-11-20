@@ -29,17 +29,20 @@ Si vous utilisez déjà l'environnement Conda du cours, activez-le avec
 Installez les dépendances :
 
 ```bash
-python -m pip install -r requirements.txt streamlit pytest
+python -m pip install -r requirements.txt
 ```
 
-Streamlit et pytest sont indiqués séparément ici parce qu'ils ne figurent pas
-encore dans le fichier `requirements.txt` actuel.
+Le fichier `requirements.txt` inclut les dépendances de l’application, pytest
+et coverage.
 
 Lancez l'interface :
 
 ```bash
-python -m streamlit run src/interface.py
+python src/main.py
 ```
+
+Le point d’entrée `main.py` lance Streamlit depuis le bon dossier avec le même
+interpréteur Python. Il peut aussi être exécuté avec le bouton Python de l’éditeur.
 
 Ouvrez l'adresse locale indiquée dans le terminal. Pour arrêter le serveur,
 utilisez `Ctrl+C`. Il n'est pas nécessaire de réentraîner le modèle pour utiliser
@@ -128,26 +131,27 @@ Quelques limites importantes :
 Pour réentraîner le modèle et remplacer sa sauvegarde et ses métadonnées :
 
 ```bash
-python -m src.modele
+python src/modele.py
 ```
 
 Pour reconstruire le CSV depuis le fichier Excel et produire le graphique
 d'exploration, en remplaçant les fichiers correspondants :
 
 ```bash
-python -m src.donnees
+python src/donnees.py
 ```
 
 ## Organisation et schémas
 
 ```text
 2026A-PR02/                  # racine Git
+├── .github/workflows/tests.yml  # tests automatiques à chaque push
 └── 2026A-PR02/              # dossier de travail des commandes ci-dessus
     ├── README.md
     ├── DECISIONS.md
     ├── JOURNAL_IA.md
     ├── requirements.txt
-    ├── .github/workflows/tests.yml  # fichier actuellement vide, à déplacer
+    ├── pytest.ini          # permet aux tests de trouver les modules dans src
     ├── donnees/             # fichier brut, CSV préparé et métadonnées JSON
     ├── modeles/             # modèle sauvegardé avec joblib
     ├── src/
@@ -156,7 +160,7 @@ python -m src.donnees
     │   ├── variables.py     # validation des nombres et catégories
     │   ├── exceptions.py    # erreurs propres au projet
     │   ├── interface.py     # interface Streamlit et historique
-    │   └── main.py          # point d'entrée encore à implémenter
+    │   └── main.py          # lanceur de l’interface Streamlit
     ├── tests/
     │   ├── test_donnees.py
     │   └── test_modele.py
@@ -192,9 +196,14 @@ classDiagram
     ModeleNBA ..> VariableCategorielle : valide le poste
 ```
 
-`JeuDeDonnees` prépare le fichier utilisé par `ModeleNBA`. Les deux classes de
-variables ont chacune une méthode `valider`. La méthode commune dans la classe
-parente `Variable` reste à ajouter pour satisfaire complètement cette partie du mandat.
+`JeuDeDonnees` prépare le fichier utilisé par `ModeleNBA`. La classe parente
+`Variable` définit `valider`, redéfinie par `VariableIntervalles` et
+`VariableCategorielle` pour leurs validations respectives. `Application` contient
+une instance de `ModeleNBA`. L’attribut `_modele` est interne à `ModeleNBA` par
+convention ; le préfixe `_` ne bloque pas techniquement l’accès extérieur.
+
+**Outil du chapitre 7 :** le décorateur `@annoncer` affiche un message avant
+l’exécution de la méthode d’entraînement.
 
 ## Tests et couverture
 
@@ -230,23 +239,29 @@ Le pourcentage se lit dans la colonne `Cover`, sur la ligne `TOTAL`.
 La mesure réalisée par Codex a utilisé un environnement temporaire avec coverage,
 les mêmes tests et le même périmètre `src`, sans modifier le code du projet.
 
+## Intégration continue
+
+Le workflow `.github/workflows/tests.yml`, placé à la racine Git, installe Python
+3.13 et les dépendances, puis lance `python -m pytest tests/ -v` dans le
+sous-dossier `2026A-PR02` à chaque push. Les exécutions des commits `07dadf0` et
+`6be731b` ont réussi sur GitHub. Chaque nouveau push produit un nouveau résultat
+à consulter dans l’onglet Actions.
+
 ## État des éléments à terminer
 
-Les docstrings et les annotations ont été ajoutées aux 38 fonctions et méthodes,
-tests compris. Plusieurs exigences restent cependant à terminer :
+Le point d’entrée, les imports simples, la méthode parente de validation,
+l’encapsulation de `_modele`, le décorateur, les dépendances, la mesure de
+couverture et le workflow CI sont en place. Les exceptions personnalisées sont
+interceptées dans le bloc de prédiction de l’interface.
+
+Il reste notamment à :
 
 - Compléter la source et la licence des données et les validations de l'auxiliaire.
-- Implémenter le point d'entrée `main.py` et compléter la méthode parente de validation
-  ainsi que l'encapsulation des attributs pertinents.
-- **Outil du chapitre 7 :** aucun décorateur, générateur ou `lambda` n'est encore
-  utilisé dans le code actif. En ajouter un utile et expliquer son rôle ici.
 - Compléter les vérifications de fichiers, l'utilisation de `with` et la gestion
   des exceptions précises dans l'interface.
-- Ajouter Streamlit et pytest à `requirements.txt`, puis vérifier l'installation
-  et le lancement depuis une copie neuve du dépôt.
-- Terminer la CI : le workflow actuel est vide et placé dans le sous-dossier.
-  GitHub attend `.github/workflows/tests.yml` **à la racine Git**. Il doit lancer
-  pytest à chaque push ; aucune exécution verte n'est confirmée à ce stade.
+- Vérifier l’installation et le lancement depuis une copie neuve du dépôt.
+- Compléter l’analyse des valeurs aberrantes, relire les docstrings et annotations
+  des ajouts récents, et préparer la démonstration.
 
 La fiche de [décisions](DECISIONS.md) explique les choix techniques.
 Le [journal d'IA](JOURNAL_IA.md) décrit l'aide reçue, les vérifications et les

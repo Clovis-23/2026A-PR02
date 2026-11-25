@@ -1,5 +1,5 @@
 """Affiche le formulaire NBA, les prédictions et leur historique avec Streamlit."""
-
+import random
 import os
 import json
 import math
@@ -169,25 +169,33 @@ def main() -> None:
     st.title("Prédiction des points NBA")
     st.write("Entrez les valeurs d'un joueur type pour calculer ses points par match.")
 
-    if st.button("Générer un joueur aléatoire (COMING SOON)") :
-          
-        pass
-
     try:
         application = Application()
     except Exception as e:
         st.error(f"Impossible de charger le modèle : {e}")
         st.stop()
 
-    nom_joueur = st.text_input("Nom du joueur").strip()
-    pos = st.radio("Poste", application.metadata["categories"])
+    if st.button("Générer un joueur aléatoire (TEST)") :
+            st.session_state["nom_joueur"] = "Generated player"
+            st.session_state["pos"] = random.choice(application.metadata["categories"])
+            for colonne in CHAMPS_NUMERIQUES:
+                minimum = application.metadata["intervalles"][colonne]["min"]
+                maximum = application.metadata["intervalles"][colonne]["max"]
+                if colonne in CHAMPS_ENTIERS:
+                    st.session_state[colonne] = random.randint(int(minimum), int(maximum))
+                else:
+                    st.session_state[colonne] = round(random.uniform(minimum, maximum), 1)
+            st.rerun()
+
+    nom_joueur = st.text_input("Nom du joueur", key="nom_joueur").strip()
+    pos = st.radio("Poste", application.metadata["categories"], key="pos")
     joueur = {"pos": pos}
     for colonne, texte in CHAMPS_NUMERIQUES.items():
-        if colonne == "age" :
+        if colonne == "age":
             intervalle = application.metadata["intervalles"]["age"]
-            joueur[colonne] = st.slider(texte, int(intervalle["min"]), int(intervalle["max"]))
-        else :
-            joueur[colonne] = saisir_un_nombre(application, colonne, texte)
+            joueur[colonne] = st.slider(texte, int(intervalle["min"]), int(intervalle["max"]), key="age")
+        else:
+            joueur[colonne] = saisir_un_nombre(application, colonne, texte) 
 
     if st.button("Prédire"):
         if nom_joueur == "":

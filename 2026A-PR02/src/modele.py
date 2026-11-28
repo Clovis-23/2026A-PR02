@@ -241,4 +241,89 @@ if __name__ == "__main__":
     print("Modèle entraîné et sauvegardé avec succès !")
 
 
-# cd ~/Library/CloudStorage/OneDrive-polymtlus/projet2/2026A-PR02/2026A-PR02/src
+
+# Ancien modèle : forêt aléatoire, non utilisé, gardé pour référence
+
+# class Modele :
+#     def __init__ (self) :
+#         dossier_script = os.path.dirname(__file__)
+#         racine_projet = os.path.dirname(dossier_script)
+#         self.chemin_modele = os.path.join(racine_projet, "modeles", "modele.pkl")
+#         self.modele_foret = None
+    
+#     def __str__(self) -> str:
+#             if self.modele_foret is None:
+#                 return "Modele pas encore chargé"
+#             return "Modele chargé"
+
+#     def charger_csv (self) :
+#          self.modele_foret = joblib.load(self.chemin_modele)
+
+#     def predire_points(self, pos, age, minutes_per_game, deux_pa, trois_pa, trb, ast, stl, tov):
+#         profil_invente = pd.DataFrame([{
+#             "pos": pos,
+#             "age": age,
+#             "minutes_per_game": minutes_per_game,
+#             "2pa": deux_pa,
+#             "3pa": trois_pa,
+#             "trb": trb,
+#             "ast": ast,
+#             "stl": stl,
+#             "tov": tov
+#         }])
+
+#         profil_encode = pd.get_dummies(profil_invente, columns=["pos"], dtype=float)
+#         colonnes_attendues = ["age", "minutes_per_game", "2pa", "3pa", "trb", "ast", "stl", "tov",
+#                             "pos_C", "pos_PF", "pos_PG", "pos_SF", "pos_SG"]
+#         profil_encode = profil_encode.reindex(columns=colonnes_attendues, fill_value=0)
+
+#         prediction_points = self.modele_foret.predict(profil_encode)
+#         return float(prediction_points[0])
+
+#     def entrainer (self, entrees_entrainement_encodees, cible_entrainement):
+#         self.modele_foret = RandomForestRegressor(random_state=42)
+#         self.modele_foret.fit(entrees_entrainement_encodees, cible_entrainement)
+
+#     def evaluer (self, entrees_test_encodees, cible_test) :
+#         predictions_foret = self.modele_foret.predict(entrees_test_encodees)
+#         self.erreur_modele = mean_squared_error(cible_test, predictions_foret) ** 0.5
+#         self.score_r2_modele = r2_score(cible_test, predictions_foret)
+#         return self.erreur_modele, self.score_r2_modele
+
+#     def sauvegarder (self) :
+#         dossier_modeles = os.path.dirname(self.chemin_modele)
+#         os.makedirs(dossier_modeles, exist_ok=True)
+#         joblib.dump(self.modele_foret, self.chemin_modele)
+ 
+
+# if __name__ == "__main__":
+#     jeu = JeuDeDonnees()
+#     donnees = jeu.charger_csv("nba_joueur_saison_2005_2024.csv")
+
+#     entrees = donnees[["pos", "age", "minutes_per_game", "2pa", "3pa", "trb", "ast", "stl", "tov"]]
+#     cible_points = donnees["pts"]
+
+#     entrees_entrainement, entrees_test, cible_entrainement, cible_test = train_test_split(
+#         entrees, cible_points, test_size=0.2, random_state=42)
+
+#     moyenne_points_entrainement = cible_entrainement.mean()
+#     predictions_moyenne = [moyenne_points_entrainement] * len(cible_test)
+#     erreur = mean_squared_error(cible_test, predictions_moyenne) ** 0.5
+
+#     #Transformer pos en nombres
+#     entrees_entrainement_encodees = pd.get_dummies(entrees_entrainement, columns=["pos"], dtype=float)
+#     entrees_test_encodees = pd.get_dummies(entrees_test, columns=["pos"], dtype=float)
+#     entrees_test_encodees = entrees_test_encodees.reindex(
+#         columns=entrees_entrainement_encodees.columns, fill_value=0)
+
+
+#     modele = Modele()
+#     modele.entrainer(entrees_entrainement_encodees, cible_entrainement)
+#     erreur_modele, score_r2_modele = modele.evaluer(entrees_test_encodees, cible_test)
+
+#     print("Moyenne train :", moyenne_points_entrainement)
+#     print("RMSE baseline :", erreur)
+#     print("RMSE modele :", erreur_modele)
+#     print("R2 modele :", score_r2_modele)
+
+#     modele.sauvegarder()

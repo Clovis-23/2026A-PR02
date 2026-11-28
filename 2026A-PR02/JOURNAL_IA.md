@@ -4,8 +4,8 @@ Les vérifications attribuées à Codex ont été réalisées par l'outil. La re
 
 | Outil | Notre demande | Aide reçue | Vérification faite | Décision |
 | --- | --- | --- | --- | --- |
-| IA à préciser | Préparer le squelette du projet. | Aide à la structure de départ. | Utilisation déclarée par l'équipe ; échange initial à retrouver. | Préciser les éléments conservés après relecture. |
-| ChatGPT / Codex | Lancer l'interface Streamlit. | Commande à exécuter depuis le dossier du projet. | Codex a vérifié le chemin après l'erreur « fichier introuvable ». | Garder la commande avec le bon dossier. |
+| Muse | Préparer le squelette du projet. | Aide à la structure de départ. | Utilisation déclarée par l'équipe ; échange initial à retrouver. | Préciser les éléments conservés après relecture. |
+| Muse | Lancer l'interface Streamlit. | Commande à exécuter depuis le dossier du projet. | Codex a vérifié le chemin après l'erreur « fichier introuvable ». | Garder la commande avec le bon dossier. |
 | ChatGPT / Codex | Lancer les tests manuellement. | Utiliser le Python de l'environnement Conda. | Le terminal indiquait que `.venv/bin/python` n'existait pas. | **Changer la commande** pour utiliser `python -m pytest tests/ -v`. |
 | ChatGPT / Codex | Corriger les imports. | Imports explicites depuis `src`, sans `if __package__`. | Les 8 tests passent lors de l'exécution par Codex. | Garder les imports simples dans le modèle et les variables. |
 | ChatGPT / Codex | Créer un workflow GitHub Actions. | Fichier YAML lançant pytest à chaque push. | Tests locaux réussis, mais aucune exécution GitHub confirmée. | Annuler cette première version ; CI à terminer. |

@@ -1,0 +1,5 @@
+.vscode/
+__pycache__/
+*.pyc
+2026A-PR02/donnees/brut/
+2026A-PR02/historique_predictions.csv

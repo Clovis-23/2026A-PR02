@@ -175,7 +175,7 @@ def main() -> None:
         st.error(f"Impossible de charger le modèle : {e}")
         st.stop()
 
-    if st.button("Générer un joueur aléatoire (TEST)") :
+    if st.button("Générer un joueur aléatoire !") :
             st.session_state["nom_joueur"] = "Generated player"
             st.session_state["pos"] = random.choice(application.metadata["categories"])
             for colonne in CHAMPS_NUMERIQUES:
